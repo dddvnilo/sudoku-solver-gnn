@@ -1,0 +1,15 @@
+torch==2.1.0+cpu
+torch-scatter==2.1.2+pt21cpu
+torch-sparse==0.6.18+pt21cpu
+torch-cluster==1.6.3+pt21cpu
+torch-spline-conv==1.2.2+pt21cpu
+torch-geometric==2.7.0
+numpy==1.25.2
+pandas==2.1.0
+scipy==1.17.1
+python-dateutil==2.9.0
+pytz==2025.2
+
+# SCIKIT-LEARN
+# instalirati scikit-learn 1.8.0 rucno sa --no-deps jer inace pip nadogradi numpy sto dalje kvari zavisnosti sa pandas i torch
+# pip install scikit-learn==1.8.0 --no-deps

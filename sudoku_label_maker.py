@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath("sudoku-solver-main"))
 from sudoku_solver_tim.puzzle import Puzzle
 
 DATASET_PATH = "sudoku.csv"
-OUTPUT_CSV = "sudoku_moves_with_candidates.csv"
+OUTPUT_CSV = "sudoku_steps.csv"
 NUM_PUZZLES = 1
 MAX_RATING = 3
 
