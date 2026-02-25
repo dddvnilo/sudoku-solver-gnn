@@ -103,7 +103,7 @@ def process_puzzle(grid_str, puzzle_idx):
                 "value": str(act["value"]) if act["value"] is not None else "",
                 "candidate": str(act["candidate"]) if act["candidate"] is not None else "",
                 "values_before": values_before_json,
-                "candidates_before": candidates_before_json if act["action_type"] == "remove_candidate" else ""
+                "candidates_before": candidates_before_json
             })
 
         step_idx += 1
