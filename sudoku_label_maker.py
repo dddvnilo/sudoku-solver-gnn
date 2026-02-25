@@ -10,8 +10,8 @@ from sudoku_solver_tim.puzzle import Puzzle
 
 DATASET_PATH = "sudoku.csv"
 OUTPUT_CSV = "sudoku_steps.csv"
-NUM_PUZZLES = 1
-MAX_RATING = 3
+NUM_PUZZLES = 1000
+MAX_RATING = 5
 
 def get_technique_and_actions(puzzle):
     """
@@ -29,6 +29,9 @@ def get_technique_and_actions(puzzle):
     technique = getattr(puzzle, "last_strategy", None)
     if technique is None:
         return None, [], None, None  # npr. brute force ili nema napretka
+
+    if technique == "brute_force":
+        return None, [], None, None
 
     # Snapshot posle poteza (samo za detekciju sta se desilo, da znamo sta se izmenilo zapravo)
     values_after = [[c.value for c in puzzle.rows[r].cells] for r in range(9)]
@@ -84,7 +87,7 @@ def process_puzzle(grid_str, puzzle_idx):
         technique, actions, values_before, candidates_before_snapshot = get_technique_and_actions(p)
 
         if not actions:
-            break  # solver ne može dalje logicki
+            continue  # predji na sledeci korak
 
         # za value i candidate radimo konverziju u string da ne bi cuvali npr. "2.0" ili "6.0" vec "2" i "6" (nzm zbog cega dolazi do toga :))
         # candidates_before nas ne interesuje ako je akcija "set_value"
