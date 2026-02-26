@@ -270,7 +270,6 @@ if __name__ == "__main__":
     plt.axhline(step_level_acc, color='red', linestyle='--', label='Step-Level Accuracy')
     plt.legend()
 
-    # dodaj numericke vrednosti iznad bar-ova
     for bar in bars:
         yval = bar.get_height()
         plt.text(bar.get_x() + bar.get_width()/2.0, yval + 0.01, f"{yval:.2f}", ha='center', va='bottom')

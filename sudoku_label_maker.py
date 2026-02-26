@@ -11,7 +11,7 @@ from sudoku_solver_tim.puzzle import Puzzle
 DATASET_PATH = "sudoku.csv"
 OUTPUT_CSV = "sudoku_steps.csv"
 TEST_CSV = "test_puzzles.csv"
-NUM_PUZZLES = 2000 #10000
+NUM_PUZZLES = 12 #10000
 NUM_TEST_PUZZLES = 1 #1000
 MAX_RATING = 5
 
