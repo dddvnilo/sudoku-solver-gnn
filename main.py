@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 import os
 
 # -------- hyperparametri --------
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 LR = 1e-3
-EPOCHS = 5
+EPOCHS = 50
+PATIENCE = 5 # za early stopping
 VALID_SPLIT = 0.1
 TEST_SPLIT = 0.1
 
@@ -44,6 +45,9 @@ if __name__ == "__main__":
     train_losses, val_losses = [], []
     acc_actions, acc_cells, acc_numbers, acc_techs = [], [], [], []
 
+    # early stopping promenljive
+    best_val_loss = float('inf')
+    epochs_no_improve = 0
     # ----------------- training loop -----------------
     for epoch in range(EPOCHS):
         model.train()
@@ -108,6 +112,17 @@ if __name__ == "__main__":
                 total_samples += batch.num_graphs
 
         avg_val_loss = val_loss / len(val_loader)
+
+        # early stopping
+        if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+            epochs_no_improve = 0
+        else:
+            epochs_no_improve += 1
+            if epochs_no_improve >= PATIENCE:
+                print(f"Early stopping na epoch {epoch+1}")
+                break
+
         val_losses.append(avg_val_loss)
         acc_action = correct_action / total_samples
         acc_cell = correct_cell / total_samples
@@ -221,15 +236,15 @@ if __name__ == "__main__":
 
     # ---------- loss plot ----------
     plt.figure(figsize=(10,5))
-    plt.plot(range(1,EPOCHS+1), train_losses, label="Train Loss")
-    plt.plot(range(1,EPOCHS+1), val_losses, label="Val Loss")
+    plt.plot(range(1,len(train_losses)+1), train_losses, label="Train Loss")
+    plt.plot(range(1,len(val_losses)+1), val_losses, label="Val Loss")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title("Training and Validation Loss")
     plt.legend()
     plt.savefig(os.path.join(save_dir, "loss_plot.png"))
     plt.close()
-    
+
     # ---------- accuracy po epoch-i ----------
     plt.figure(figsize=(10,5))
     plt.plot(range(1,EPOCHS+1), acc_actions, label="Acc Action")

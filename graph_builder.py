@@ -122,3 +122,40 @@ def build_sudoku_edge_index():
     # konvertuj u tensor [2, num_edges]
     edge_index = torch.tensor(list(edges), dtype=torch.long).t().contiguous()
     return edge_index
+
+def build_graph(values, candidates):
+    """
+    Pretvara trenutno stanje Sudoku puzzle u PyG graf.
+    values: 9x9 matrica brojeva (0 ako prazno)
+    candidates: 9x9 matrica setova kandidata
+    """
+    x = []
+    for r in range(9):
+        for c in range(9):
+            cell_val = values[r][c]
+            candidate_vec = [0]*9
+            for cand in candidates[r][c]:
+                candidate_vec[cand-1] = 1
+            # feature vector = one-hot value + candidates
+            val_onehot = [0]*9
+            if cell_val != 0:
+                val_onehot[cell_val-1] = 1
+            feat = val_onehot + candidate_vec
+            x.append(feat)
+    
+    x = torch.tensor(x, dtype=torch.float)
+
+    # edges: poveži svaka dva čvora u istom redu, koloni i kvadratu 3x3
+    edge_index = []
+    for i in range(81):
+        r1, c1 = divmod(i, 9)
+        for j in range(81):
+            if i == j:
+                continue
+            r2, c2 = divmod(j, 9)
+            if r1 == r2 or c1 == c2 or (r1//3 == r2//3 and c1//3 == c2//3):
+                edge_index.append([i,j])
+    edge_index = torch.tensor(edge_index, dtype=torch.long).t().contiguous()
+
+    data = Data(x=x, edge_index=edge_index)
+    return data

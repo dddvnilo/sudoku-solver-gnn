@@ -10,7 +10,9 @@ from sudoku_solver_tim.puzzle import Puzzle
 
 DATASET_PATH = "sudoku.csv"
 OUTPUT_CSV = "sudoku_steps.csv"
-NUM_PUZZLES = 1000
+TEST_CSV = "test_puzzles.csv"
+NUM_PUZZLES = 2000 #10000
+NUM_TEST_PUZZLES = 1 #1000
 MAX_RATING = 5
 
 def get_technique_and_actions(puzzle):
@@ -114,13 +116,22 @@ def process_puzzle(grid_str, puzzle_idx):
     return records
 
 df = pd.read_csv(DATASET_PATH)
-selected_df = df[df['difficulty'] <= MAX_RATING].head(NUM_PUZZLES).reset_index(drop=True)
+total_puzzles = NUM_PUZZLES + NUM_TEST_PUZZLES
+selected_df = df[df['difficulty'] <= MAX_RATING].head(total_puzzles).reset_index(drop=True)
 
+# prvih NUM_PUZZLES ucitanih ide na trening/val/test dataset (u okviru poteza koje kasnije delimo na trening/val/test skupove)
+dataset_df = selected_df.head(NUM_PUZZLES)
 all_records = []
-for idx, row in selected_df.iterrows():
+for idx, row in dataset_df.iterrows():
     puzzle_records = process_puzzle(row['puzzle'], idx)
     all_records.extend(puzzle_records)
 
 output_df = pd.DataFrame(all_records)
 output_df.to_csv(OUTPUT_CSV, index=False)
 print(f"Saved {len(output_df)} moves to {OUTPUT_CSV}")
+
+# drugi deo ide u puzzle_test CSV nad njima cemo testirati koliko dobro model resava cele puzzle
+test_df = selected_df.tail(NUM_TEST_PUZZLES).copy()
+test_df.reset_index(drop=True, inplace=True)
+test_df.to_csv(TEST_CSV, index=False)
+print(f"Saved {len(test_df)} test puzzles to {TEST_CSV}")
